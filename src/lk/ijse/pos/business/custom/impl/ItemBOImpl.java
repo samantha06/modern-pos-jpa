@@ -21,52 +21,37 @@ public class ItemBOImpl implements ItemBO {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             session.beginTransaction();
             itemDAO.setSession(session);
-            List<ItemDTO> collect = itemDAO.findAll().stream().map(item -> new ItemDTO(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand())).collect(Collectors.toList());
+            List<ItemDTO> items = itemDAO.findAll().stream().map(item -> new ItemDTO(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand())).collect(Collectors.toList());
             session.getTransaction().commit();
-            return collect;
+            return items;
         }
-        //        itemDAO.findAll().stream().map(new Function<Item, ItemDTO>() {
-//            @Override
-//            public ItemDTO apply(Item item) {
-//                return new ItemDTO(item.getCode(), item.getDescription(),item.getUnitPrice(), item.getQtyOnHand());
-//            }
-//        }).collect(Collectors.toList());
 
     }
 
-    public boolean saveItem(ItemDTO item) throws Exception {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    public void saveItem(ItemDTO item) throws Exception {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             itemDAO.setSession(session);
             itemDAO.save(new Item(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
             session.getTransaction().commit();
-            return true;
-        }catch (Exception ex){
-            throw ex;
         }
     }
 
-    public boolean updateItem(ItemDTO item) throws Exception {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    public void updateItem(ItemDTO item) throws Exception {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             itemDAO.setSession(session);
             itemDAO.update(new Item(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
             session.getTransaction().commit();
-            return true;
-        }catch (Exception ex){
-            throw ex;
         }
     }
 
-    public boolean deleteItem(String code) throws Exception {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    public void deleteItem(String code) throws Exception {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             itemDAO.setSession(session);
             itemDAO.delete(code);
             session.getTransaction().commit();
-            return true;
-        }catch (Exception ex){
-            throw ex;
         }
     }
 

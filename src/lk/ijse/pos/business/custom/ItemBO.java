@@ -9,10 +9,10 @@ public interface ItemBO extends SuperBO {
 
     public List<ItemDTO> getAllItems() throws Exception;
 
-    public boolean saveItem(ItemDTO item) throws Exception;
+    public void saveItem(ItemDTO item) throws Exception;
 
-    public boolean updateItem(ItemDTO item)throws Exception;
+    public void updateItem(ItemDTO item)throws Exception;
 
-    public boolean deleteItem(String code) throws Exception;
+    public void deleteItem(String code) throws Exception;
 
 }

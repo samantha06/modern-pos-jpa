@@ -5,7 +5,7 @@ import lk.ijse.pos.dto.OrderDTO;
 
 public interface OrderBO extends SuperBO {
 
-    public boolean placeOrder(OrderDTO order) throws Exception;
+    public void placeOrder(OrderDTO order) throws Exception;
 
     public int generateOrderId() throws Exception;
 

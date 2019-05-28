@@ -36,45 +36,36 @@ public class CustomerBOImpl implements CustomerBO {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             session.beginTransaction();
             customerDAO.setSession(session);
-            List<CustomerDTO> collect = customerDAO.findAll().stream().map(customer -> new CustomerDTO(customer.getId(), customer.getName(), customer.getAddress())).collect(Collectors.toList());
+            List<CustomerDTO> customers = customerDAO.findAll().stream().map(customer -> new CustomerDTO(customer.getId(), customer.getName(), customer.getAddress())).collect(Collectors.toList());
             session.getTransaction().commit();
-            return collect;
+            return customers;
         }
     }
 
-    public boolean saveCustomer(CustomerDTO dto) throws Exception {
+    public void saveCustomer(CustomerDTO dto) throws Exception {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             session.beginTransaction();
             customerDAO.setSession(session);
             customerDAO.save(new Customer(dto.getId(), dto.getName(), dto.getAddress()));
             session.getTransaction().commit();
-            return true;
-        }catch (Exception e){
-            throw e;
         }
     }
 
-    public boolean updateCustomer(CustomerDTO dto) throws Exception {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    public void updateCustomer(CustomerDTO dto) throws Exception {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             customerDAO.setSession(session);
             customerDAO.update(new Customer(dto.getId(), dto.getName(), dto.getAddress()));
             session.getTransaction().commit();
-            return true;
-        }catch (Exception e){
-            throw e;
         }
     }
 
-    public boolean removeCustomer(String id) throws Exception {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    public void removeCustomer(String id) throws Exception {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             customerDAO.setSession(session);
             customerDAO.delete(id);
             session.getTransaction().commit();
-            return true;
-        }catch (Exception e){
-            throw e;
         }
     }
 
