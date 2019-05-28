@@ -1,4 +1,6 @@
 package lk.ijse.pos.entity;
 
-public class SuperEntity {
+import java.io.Serializable;
+
+public class SuperEntity implements Serializable {
 }

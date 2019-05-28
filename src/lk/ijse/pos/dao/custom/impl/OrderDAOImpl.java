@@ -11,11 +11,11 @@ import java.util.List;
 public class OrderDAOImpl implements OrderDAO {
 
     public boolean save(Order order) throws Exception{
-        return CrudUtil.execute("INSERT INTO `Order` VALUES (?,?,?)",order.getId(), order.getDate(), order.getCustomerId());
+        return CrudUtil.execute("INSERT INTO `Order` VALUES (?,?,?)",order.getId(), order.getDate(), order.getCustomer());
     }
 
     public boolean update(Order order)throws Exception{
-        return CrudUtil.execute("UPDATE `Order` SET date=?, customerId=? WHERE id=?", order.getDate(), order.getCustomerId(), order.getId());
+        return CrudUtil.execute("UPDATE `Order` SET date=?, customerId=? WHERE id=?", order.getDate(), order.getCustomer(), order.getId());
     }
 
     public boolean delete(Integer id)throws Exception{

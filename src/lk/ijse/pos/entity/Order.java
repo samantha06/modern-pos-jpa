@@ -1,19 +1,30 @@
 package lk.ijse.pos.entity;
 
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name="`Order`")
 public class Order extends SuperEntity{
+
+    @Id
     private int id;
     private LocalDate date;
-    private String customerId;
+    @ManyToOne
+    @JoinColumn(name="customerId",referencedColumnName = "id")
+    private Customer customer;
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(int id, LocalDate date, String customerId) {
+    public Order(int id, LocalDate date, Customer customer) {
         this.id = id;
         this.date = date;
-        this.customerId = customerId;
+        this.customer = customer;
     }
 
     public int getId() {
@@ -32,12 +43,12 @@ public class Order extends SuperEntity{
         this.date = date;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
@@ -45,7 +56,12 @@ public class Order extends SuperEntity{
         return "Order{" +
                 "id=" + id +
                 ", date=" + date +
-                ", customerId='" + customerId + '\'' +
+                ", customer='" + customer + '\'' +
                 '}';
     }
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
 }

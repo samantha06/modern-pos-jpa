@@ -1,5 +1,8 @@
 package lk.ijse.pos.entity;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class OrderDetailPK {
 
     private int orderId;

@@ -1,9 +1,19 @@
 package lk.ijse.pos.entity;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 public class Customer extends SuperEntity{
+
+    @Id
     private String id;
     private String name;
     private String address;
+
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private List<Order> orders = new ArrayList<>();
 
     public Customer() {
     }
@@ -46,4 +56,14 @@ public class Customer extends SuperEntity{
                 ", address='" + address + '\'' +
                 '}';
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order){
+        this.getOrders().add(order);
+        order.setCustomer(this);
+    }
+
 }

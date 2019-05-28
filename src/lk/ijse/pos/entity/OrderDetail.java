@@ -1,10 +1,21 @@
 package lk.ijse.pos.entity;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderDetail extends SuperEntity{
 
+    @EmbeddedId
     private OrderDetailPK orderDetailPK;
     private int qty;
     private double unitPrice;
+
+    @ManyToOne
+    @JoinColumn(name="orderId", referencedColumnName = "id",insertable = false,updatable = false)
+    private Order order;
+    @ManyToOne
+    @JoinColumn(name="itemCode",referencedColumnName = "code",insertable = false, updatable = false)
+    private Item item;
 
     public OrderDetail() {
     }
@@ -52,5 +63,13 @@ public class OrderDetail extends SuperEntity{
                 ", qty=" + qty +
                 ", unitPrice=" + unitPrice +
                 '}';
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public Item getItem() {
+        return item;
     }
 }
