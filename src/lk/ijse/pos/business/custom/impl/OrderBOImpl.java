@@ -25,7 +25,7 @@ public class OrderBOImpl implements OrderBO {
 
     public void placeOrder(OrderDTO order) throws Exception {
 
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             orderDAO.setSession(session);
@@ -36,7 +36,7 @@ public class OrderBOImpl implements OrderBO {
             // Find the customer
             Customer customer = customerDAO.find(order.getCustomerId());
             // Save the order
-            orderDAO.save(new Order(order.getOrderId(), order.getOrderDate(),customer));
+            orderDAO.save(new Order(order.getOrderId(), order.getOrderDate(), customer));
             //  Save OrderDetails and Update the Qty.
             for (OrderDetailDTO dto : order.getOrderDetails()) {
                 orderDetailDAO.save(new OrderDetail(dto.getOrderId(), dto.getItemCode(), dto.getQty(), dto.getUnitPrice()));
@@ -53,7 +53,12 @@ public class OrderBOImpl implements OrderBO {
     }
 
     public int generateOrderId() throws Exception {
-        return orderDAO.getLastOrderId() + 1;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            orderDAO.setSession(session);
+            return orderDAO.getLastOrderId() + 1;
+        } catch (NullPointerException e) {
+            return 1;
+        }
     }
 
 }

@@ -5,12 +5,8 @@
  */
 package lk.ijse.pos.controller;
 
-import lk.ijse.pos.business.BOFactory;
-import lk.ijse.pos.business.BOTypes;
-import lk.ijse.pos.business.custom.CustomerBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import lk.ijse.pos.dto.CustomerDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -24,6 +20,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ijse.pos.business.BOFactory;
+import lk.ijse.pos.business.BOTypes;
+import lk.ijse.pos.business.custom.CustomerBO;
+import lk.ijse.pos.dto.CustomerDTO;
 import lk.ijse.pos.main.AppInitializer;
 import lk.ijse.pos.util.CustomerTM;
 
@@ -79,7 +79,7 @@ public class ManageCustomerFormController implements Initializable {
                 tblCustomers.getItems().add(new CustomerTM(customer.getId(), customer.getName(), customer.getAddress()));
             }
         } catch (Exception ex) {
-            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,ex);
+            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, ex);
         }
 
         tblCustomers.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<CustomerTM>() {
@@ -141,43 +141,34 @@ public class ManageCustomerFormController implements Initializable {
 
             CustomerDTO customerDTO = new CustomerDTO(txtCustomerId.getText(), txtCustomerName.getText(), txtCustomerAddress.getText());
             try {
-                boolean result = customerBO.saveCustomer(customerDTO);
-                if (result) {
-                    new Alert(Alert.AlertType.INFORMATION, "Customer has been saved successfully", ButtonType.OK).showAndWait();
+                customerBO.saveCustomer(customerDTO);
+                new Alert(Alert.AlertType.INFORMATION, "Customer has been saved successfully", ButtonType.OK).showAndWait();
 
-                    CustomerTM customerTM = new CustomerTM(txtCustomerId.getText(), txtCustomerName.getText(), txtCustomerAddress.getText());
-                    tblCustomers.getItems().add(customerTM);
-                    tblCustomers.scrollTo(customerTM);
-
-                } else {
-                    new Alert(Alert.AlertType.ERROR, "Failed to save the customer, try again", ButtonType.OK).showAndWait();
-                }
+                CustomerTM customerTM = new CustomerTM(txtCustomerId.getText(), txtCustomerName.getText(), txtCustomerAddress.getText());
+                tblCustomers.getItems().add(customerTM);
+                tblCustomers.scrollTo(customerTM);
 
             } catch (Exception e) {
-                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+                new Alert(Alert.AlertType.ERROR, "Failed to save the customer, try again", ButtonType.OK).showAndWait();
+                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
             }
 
         } else {
             // Update
 
-
             try {
-                boolean result = customerBO.updateCustomer(new CustomerDTO(txtCustomerId.getText(), txtCustomerName.getText(), txtCustomerAddress.getText()));
+                customerBO.updateCustomer(new CustomerDTO(txtCustomerId.getText(), txtCustomerName.getText(), txtCustomerAddress.getText()));
 
-                if (result) {
+                new Alert(Alert.AlertType.INFORMATION, "Customer has been updated successfully").show();
+                CustomerTM selectedCustomer = tblCustomers.getSelectionModel().getSelectedItem();
+                selectedCustomer.setName(txtCustomerName.getText());
+                selectedCustomer.setAddress(txtCustomerAddress.getText());
+                tblCustomers.refresh();
 
-                    new Alert(Alert.AlertType.INFORMATION, "Customer has been updated successfully").show();
-                    CustomerTM selectedCustomer = tblCustomers.getSelectionModel().getSelectedItem();
-                    selectedCustomer.setName(txtCustomerName.getText());
-                    selectedCustomer.setAddress(txtCustomerAddress.getText());
-                    tblCustomers.refresh();
-
-                } else {
-
-                    new Alert(Alert.AlertType.ERROR, "Failed to update the customer, try again").show();
-                }
             } catch (Exception e) {
-                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+
+                new Alert(Alert.AlertType.ERROR, "Failed to update the customer, try again").show();
+                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
             }
 
         }
@@ -195,16 +186,14 @@ public class ManageCustomerFormController implements Initializable {
             int selectedRow = tblCustomers.getSelectionModel().getSelectedIndex();
 
             try {
-                boolean result = customerBO.removeCustomer(txtCustomerId.getText());
+                customerBO.removeCustomer(txtCustomerId.getText());
 
-                if (result) {
                     tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
                     reset();
-                } else {
-                    new Alert(Alert.AlertType.ERROR, "Failed to delete the customer, try again").show();
-                }
+
             } catch (Exception e) {
-                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+                new Alert(Alert.AlertType.ERROR, "Failed to delete the customer, try again").show();
+                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
             }
 
         }

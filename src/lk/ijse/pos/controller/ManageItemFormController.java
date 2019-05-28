@@ -5,12 +5,8 @@
  */
 package lk.ijse.pos.controller;
 
-import lk.ijse.pos.business.BOFactory;
-import lk.ijse.pos.business.BOTypes;
-import lk.ijse.pos.business.custom.ItemBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import lk.ijse.pos.dto.ItemDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -24,6 +20,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ijse.pos.business.BOFactory;
+import lk.ijse.pos.business.BOTypes;
+import lk.ijse.pos.business.custom.ItemBO;
+import lk.ijse.pos.dto.ItemDTO;
 import lk.ijse.pos.main.AppInitializer;
 import lk.ijse.pos.util.ItemTM;
 
@@ -57,7 +57,7 @@ public class ManageItemFormController implements Initializable {
     @FXML
     private TableView<ItemTM> tblItems;
 
-    private ItemBO itemBO = BOFactory.getInstance().getBO(BOTypes.ITEM) ;
+    private ItemBO itemBO = BOFactory.getInstance().getBO(BOTypes.ITEM);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,7 +74,7 @@ public class ManageItemFormController implements Initializable {
         btnSave.setDisable(true);
         btnDelete.setDisable(true);
 
-        
+
         try {
             List<ItemDTO> allItems = itemBO.getAllItems();
             for (ItemDTO item : allItems) {
@@ -82,7 +82,7 @@ public class ManageItemFormController implements Initializable {
                         item.getQtyOnHand(), item.getUnitPrice()));
             }
         } catch (Exception e) {
-            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
         }
 
         tblItems.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ItemTM>() {
@@ -154,50 +154,42 @@ public class ManageItemFormController implements Initializable {
                 }
             }
 
-            
+
             try {
-                boolean result = itemBO.saveItem(new ItemDTO(txtItemCode.getText(),
+                itemBO.saveItem(new ItemDTO(txtItemCode.getText(),
                         txtDescription.getText(),
                         Double.parseDouble(txtUnitPrice.getText()),
                         Integer.parseInt(txtQty.getText())));
 
-                if (result) {
+                ItemTM itemTM = new ItemTM(txtItemCode.getText(), txtDescription.getText(),
+                        Integer.parseInt(txtQty.getText()), Double.parseDouble(txtUnitPrice.getText()));
 
-                    ItemTM itemTM = new ItemTM(txtItemCode.getText(), txtDescription.getText(),
-                            Integer.parseInt(txtQty.getText()), Double.parseDouble(txtUnitPrice.getText()));
+                new Alert(Alert.AlertType.INFORMATION, "Item has been saved successfully", ButtonType.OK).showAndWait();
+                tblItems.getItems().add(itemTM);
+                tblItems.scrollTo(itemTM);
 
-                    new Alert(Alert.AlertType.INFORMATION, "Item has been saved successfully", ButtonType.OK).showAndWait();
-                    tblItems.getItems().add(itemTM);
-                    tblItems.scrollTo(itemTM);
-
-                } else {
-
-                    new Alert(Alert.AlertType.ERROR, "Failed to save the item, try again", ButtonType.OK).showAndWait();
-                }
             } catch (Exception e) {
-                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+                new Alert(Alert.AlertType.ERROR, "Failed to save the item, try again", ButtonType.OK).showAndWait();
+                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
             }
 
 
         } else {
             // Update
-
-            
             try {
-                boolean result = itemBO.updateItem(new ItemDTO(txtItemCode.getText(), txtDescription.getText(), Double.parseDouble(txtUnitPrice.getText()), Integer.parseInt(txtQty.getText())));
 
-                if (result){
-                    ItemTM selectedItem = tblItems.getSelectionModel().getSelectedItem();
-                    selectedItem.setDescription(txtDescription.getText());
-                    selectedItem.setUnitPrice(Double.parseDouble(txtUnitPrice.getText()));
-                    selectedItem.setQtyOnHand(Integer.parseInt(txtQty.getText()));
-                    tblItems.refresh();
-                    new Alert(Alert.AlertType.INFORMATION, "Item has been updated successfully", ButtonType.OK).showAndWait();
-                }else{
-                    new Alert(Alert.AlertType.ERROR,"Failed to update the item, try again").show();
-                }
+                itemBO.updateItem(new ItemDTO(txtItemCode.getText(), txtDescription.getText(), Double.parseDouble(txtUnitPrice.getText()), Integer.parseInt(txtQty.getText())));
+
+                ItemTM selectedItem = tblItems.getSelectionModel().getSelectedItem();
+                selectedItem.setDescription(txtDescription.getText());
+                selectedItem.setUnitPrice(Double.parseDouble(txtUnitPrice.getText()));
+                selectedItem.setQtyOnHand(Integer.parseInt(txtQty.getText()));
+                tblItems.refresh();
+                new Alert(Alert.AlertType.INFORMATION, "Item has been updated successfully", ButtonType.OK).showAndWait();
+
             } catch (Exception e) {
-                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+                new Alert(Alert.AlertType.ERROR, "Failed to update the item, try again").show();
+                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
             }
 
         }
@@ -215,16 +207,13 @@ public class ManageItemFormController implements Initializable {
         if (buttonType.get() == ButtonType.YES) {
 
             try {
-                boolean result = itemBO.deleteItem(txtItemCode.getText());
+                itemBO.deleteItem(txtItemCode.getText());
+                tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
+                reset();
 
-                if (result){
-                    tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
-                    reset();
-                }else{
-                    new Alert(Alert.AlertType.ERROR,"Failed to delete the item, try again").show();
-                }
             } catch (Exception e) {
-                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
+                new Alert(Alert.AlertType.ERROR, "Failed to delete the item, try again").show();
+                Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
             }
 
 

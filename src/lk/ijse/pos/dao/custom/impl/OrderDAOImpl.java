@@ -39,6 +39,6 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public int getLastOrderId() throws Exception {
-        return session.createNativeQuery("SELECT id FROM `Order` ORDER BY id DESC LIMIT 1", Integer.class).uniqueResult();
+        return (int) session.createNativeQuery("SELECT id FROM `Order` ORDER BY id DESC LIMIT 1").uniqueResult();
     }
 }

@@ -1,17 +1,8 @@
 package lk.ijse.pos.controller;
 
-import lk.ijse.pos.business.BOFactory;
-import lk.ijse.pos.business.BOTypes;
-import lk.ijse.pos.business.custom.CustomerBO;
-import lk.ijse.pos.business.custom.ItemBO;
-import lk.ijse.pos.business.custom.OrderBO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import lk.ijse.pos.dto.CustomerDTO;
-import lk.ijse.pos.dto.ItemDTO;
-import lk.ijse.pos.dto.OrderDTO;
-import lk.ijse.pos.dto.OrderDetailDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -25,9 +16,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import lk.ijse.pos.util.OrderDetailTM;
+import lk.ijse.pos.business.BOFactory;
+import lk.ijse.pos.business.BOTypes;
+import lk.ijse.pos.business.custom.CustomerBO;
+import lk.ijse.pos.business.custom.ItemBO;
+import lk.ijse.pos.business.custom.OrderBO;
+import lk.ijse.pos.dto.CustomerDTO;
+import lk.ijse.pos.dto.ItemDTO;
+import lk.ijse.pos.dto.OrderDTO;
+import lk.ijse.pos.dto.OrderDetailDTO;
 import lk.ijse.pos.main.AppInitializer;
 import lk.ijse.pos.util.ItemTM;
+import lk.ijse.pos.util.OrderDetailTM;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -124,7 +124,7 @@ public class PlaceOrderFormController {
                 cmbCustomerId.getItems().add(customer.getId());
             }
         } catch (Exception ex) {
-            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,ex);
+            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, ex);
         }
 
         cmbCustomerId.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -135,7 +135,7 @@ public class PlaceOrderFormController {
                     CustomerDTO customer = customerBO.getCustomerById(customerId);
                     lblCustomerName.setText(customer.getName());
                 } catch (Exception ex) {
-                    Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,ex);
+                    Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -156,7 +156,7 @@ public class PlaceOrderFormController {
                 cmbItemCode.getItems().add(itemCode);
             }
         } catch (Exception ex) {
-            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,ex);
+            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, ex);
         }
 
         cmbItemCode.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -180,7 +180,7 @@ public class PlaceOrderFormController {
         });
 
         try {
-            
+
             orderId = orderBO.generateOrderId();
             lblOrderID.setText("OD" + orderId);
         } catch (Exception e) {
@@ -313,20 +313,14 @@ public class PlaceOrderFormController {
 
         OrderDTO orderDTO = new OrderDTO(orderId, LocalDate.now(), cmbCustomerId.getValue(), alOrderDetails);
 
-        boolean result = false;
         try {
-            result = orderBO.placeOrder(orderDTO);
-        } catch (Exception e) {
-            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null,e);
-        }
-
-        if (result) {
+            orderBO.placeOrder(orderDTO);
             new Alert(Alert.AlertType.INFORMATION, "Order has been saved successfully").show();
             btnNewOrder_OnAction(null);
-        } else {
+        } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Failed to save the order").show();
+            Logger.getLogger("lk.ijse.pos.controller").log(Level.SEVERE, null, e);
         }
-
 
     }
 
