@@ -1,4 +1,5 @@
 import lk.ijse.pos.db.HibernateUtil;
+import lk.ijse.pos.entity.Customer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -10,7 +11,9 @@ public class HibernateUtilTest {
 
         Session session = sessionFactory.openSession();
 
-        System.out.println(session);
+        Customer c001 = session.get(Customer.class, "C001");
+
+        System.out.println(c001);
 
         session.close();
         sessionFactory.close();
