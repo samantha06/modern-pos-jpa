@@ -1,5 +1,9 @@
 package lk.ijse.pos.db;
 
+import lk.ijse.pos.entity.Customer;
+import lk.ijse.pos.entity.Item;
+import lk.ijse.pos.entity.Order;
+import lk.ijse.pos.entity.OrderDetail;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -21,6 +25,10 @@ public class HibernateUtil {
                 .loadProperties(propFile).build();
 
         Metadata metadata = new MetadataSources(registry)
+                .addAnnotatedClass(Customer.class)
+                .addAnnotatedClass(Item.class)
+                .addAnnotatedClass(Order.class)
+                .addAnnotatedClass(OrderDetail.class)
                 .getMetadataBuilder()
                 .applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE )
                 .build();
