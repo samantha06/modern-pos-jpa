@@ -7,7 +7,7 @@ import lk.ijse.pos.dao.custom.CustomerDAO;
 import lk.ijse.pos.dao.custom.ItemDAO;
 import lk.ijse.pos.dao.custom.OrderDAO;
 import lk.ijse.pos.dao.custom.OrderDetailDAO;
-import lk.ijse.pos.db.HibernateUtil;
+import lk.ijse.pos.db.JPAUtil;
 import lk.ijse.pos.dto.OrderDTO;
 import lk.ijse.pos.dto.OrderDetailDTO;
 import lk.ijse.pos.entity.Customer;
@@ -15,6 +15,9 @@ import lk.ijse.pos.entity.Item;
 import lk.ijse.pos.entity.Order;
 import lk.ijse.pos.entity.OrderDetail;
 import org.hibernate.Session;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class OrderBOImpl implements OrderBO {
 
@@ -25,13 +28,14 @@ public class OrderBOImpl implements OrderBO {
 
     public void placeOrder(OrderDTO order) throws Exception {
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
+        EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
+        EntityManager entityManager = emf.createEntityManager();
 
-            orderDAO.setSession(session);
-            customerDAO.setSession(session);
-            itemDAO.setSession(session);
-            orderDetailDAO.setSession(session);
+        entityManager.getTransaction().begin();
+            orderDAO.setEntityManager(entityManager);
+            customerDAO.setEntityManager(entityManager);
+            itemDAO.setEntityManager(entityManager);
+            orderDetailDAO.setEntityManager(entityManager);
 
             // Find the customer
             Customer customer = customerDAO.find(order.getCustomerId());
@@ -48,13 +52,17 @@ public class OrderBOImpl implements OrderBO {
                 item.setQtyOnHand(qty);
             }
 
-            session.getTransaction().commit();
-        }
+            entityManager.getTransaction().commit();
+        
     }
 
     public int generateOrderId() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            orderDAO.setSession(session);
+        try {
+            EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
+            EntityManager entityManager = emf.createEntityManager();
+
+            entityManager.getTransaction().begin();
+            orderDAO.setEntityManager(entityManager);
             return orderDAO.getLastOrderId() + 1;
         } catch (NullPointerException e) {
             return 1;

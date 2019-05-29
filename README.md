@@ -1,6 +1,6 @@
 # Modern POS - Hibernate
 
-Podi ungea asawata hadapu ekak hodea.
+JPA project
 
 ## License
 

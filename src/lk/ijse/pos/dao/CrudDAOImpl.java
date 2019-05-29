@@ -1,15 +1,15 @@
 package lk.ijse.pos.dao;
 
 import lk.ijse.pos.entity.SuperEntity;
-import org.hibernate.Session;
 
+import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable> implements CrudDAO<T,ID>{
 
-    protected Session session;
+    protected EntityManager entityManager;
     private Class<T> entity;
 
 
@@ -18,32 +18,32 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
     }
 
     @Override
-    public void setSession(Session session) {
-        this.session = session;
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     public void save(T entity) throws Exception {
-        session.save(entity);
+        entityManager.persist(entity);
     }
 
     @Override
     public void update(T entity) throws Exception {
-        session.merge(entity);
+        entityManager.merge(entity);
     }
 
     @Override
     public void delete(ID entityId) throws Exception {
-        session.delete(session.load(entity, entityId));
+        entityManager.remove(entityManager.find(entity, entityId));
     }
 
     @Override
     public List<T> findAll() throws Exception {
-        return session.createQuery("FROM " + entity.getName()).list();
+        return entityManager.createQuery("FROM " + entity.getName()).getResultList();
     }
 
     @Override
     public T find(ID entityId) throws Exception {
-        return session.find(entity,entityId);
+        return entityManager.find(entity,entityId);
     }
 }

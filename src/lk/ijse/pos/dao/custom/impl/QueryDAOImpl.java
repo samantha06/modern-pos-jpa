@@ -2,26 +2,25 @@ package lk.ijse.pos.dao.custom.impl;
 
 import lk.ijse.pos.dao.custom.QueryDAO;
 import lk.ijse.pos.entity.CustomEntity;
-import org.hibernate.Session;
 
-import java.sql.ResultSet;
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
 public class QueryDAOImpl implements QueryDAO {
 
-    private Session session;
+    private EntityManager session;
 
     @Override
-    public void setSession(Session session) {
-        this.session = session;
+    public void setEntityManager(EntityManager entityManager) {
+        this.session = entityManager;
     }
 
     @Override
     public List<CustomEntity> getOrdersTotal() throws Exception {
 
         List<Object[]> list = session.createNativeQuery("SELECT id, SUM(qty * unitPrice) AS Total FROM `Order` INNER JOIN\n" +
-                "  OrderDetail OD on `Order`.id = OD.orderId GROUP BY id").list();
+                "  OrderDetail OD on `Order`.id = OD.orderId GROUP BY id").getResultList();
 
         List<CustomEntity> al = new ArrayList<>();
 
