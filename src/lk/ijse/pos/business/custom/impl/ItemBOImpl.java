@@ -20,48 +20,48 @@ public class ItemBOImpl implements ItemBO {
 
     public List<ItemDTO> getAllItems() throws Exception {
 
-        EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
             itemDAO.setEntityManager(entityManager);
             List<ItemDTO> items = itemDAO.findAll().stream().map(item -> new ItemDTO(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand())).collect(Collectors.toList());
             entityManager.getTransaction().commit();
+        entityManager.close();
             return items;
 
 
     }
 
     public void saveItem(ItemDTO item) throws Exception {
-        EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
             itemDAO.setEntityManager(entityManager);
             itemDAO.save(new Item(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
             entityManager.getTransaction().commit();
+        entityManager.close();
 
     }
 
     public void updateItem(ItemDTO item) throws Exception {
-        EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
             itemDAO.setEntityManager(entityManager);
             itemDAO.update(new Item(item.getCode(), item.getDescription(), item.getUnitPrice(), item.getQtyOnHand()));
             entityManager.getTransaction().commit();
+        entityManager.close();
 
     }
 
     public void deleteItem(String code) throws Exception {
-        EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
             itemDAO.setEntityManager(entityManager);
             itemDAO.delete(code);
             entityManager.getTransaction().commit();
+        entityManager.close();
 
     }
 

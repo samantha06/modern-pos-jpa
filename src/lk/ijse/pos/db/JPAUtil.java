@@ -45,8 +45,9 @@ public class JPAUtil {
         return Persistence.createEntityManagerFactory("unit1", properties);
     }
 
-    public static EntityManagerFactory getEntityManagerFactory(){
-        return entityManagerFactory;
+    public static EntityManager getEntityManager(){
+        return entityManagerFactory.createEntityManager();
+
     }
 
 }

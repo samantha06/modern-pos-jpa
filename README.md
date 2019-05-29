@@ -1,7 +1,27 @@
-# Modern POS - Hibernate
+#Modern POS System with JPA
 
-JPA project
+Clone the project via Intellil IDEA and import
 
-## License
+#Prerequisites
+-Intellj idea
 
-This project has been licensed [MIT](License).
+-JavaSE(JavaFX)
+
+-SceneBulider
+
+#Built With
+
+-JavaFX
+
+-Java
+
+-Java Persistence API
+
+#Technological Stack
+
+-JAVA
+
+-JPA
+
+-MySql
+

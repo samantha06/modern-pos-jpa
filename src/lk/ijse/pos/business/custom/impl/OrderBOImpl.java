@@ -28,8 +28,7 @@ public class OrderBOImpl implements OrderBO {
 
     public void placeOrder(OrderDTO order) throws Exception {
 
-        EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = JPAUtil.getEntityManager();
 
         entityManager.getTransaction().begin();
             orderDAO.setEntityManager(entityManager);
@@ -53,17 +52,19 @@ public class OrderBOImpl implements OrderBO {
             }
 
             entityManager.getTransaction().commit();
+        entityManager.close();
         
     }
 
     public int generateOrderId() throws Exception {
         try {
-            EntityManagerFactory emf = JPAUtil.getEntityManagerFactory();
-            EntityManager entityManager = emf.createEntityManager();
+            EntityManager entityManager = JPAUtil.getEntityManager();
 
             entityManager.getTransaction().begin();
             orderDAO.setEntityManager(entityManager);
+            entityManager.close();
             return orderDAO.getLastOrderId() + 1;
+
         } catch (NullPointerException e) {
             return 1;
         }
